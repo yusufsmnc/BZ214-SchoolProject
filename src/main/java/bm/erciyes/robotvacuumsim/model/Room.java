@@ -1,0 +1,113 @@
+package bm.erciyes.robotvacuumsim.model;
+
+import bm.erciyes.robotvacuumsim.util.DirtType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Room {
+    private int width;
+    private int height;
+    private Cell[][] grid;
+    private ChargingStation station;
+    private List<Furniture> furnitures;
+
+    public Room(int width, int height){
+        this.width = width;
+        this.height = height;
+        this.furnitures = new ArrayList<>();
+
+        // grid oluştur — her hücreyi başlat
+        grid = new Cell[width][height];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                grid[x][y] = new Cell(x, y);
+            }
+        }
+
+        // şarj istasyonu sol üst köşede
+        station = new ChargingStation(0, 0);
+        grid[0][0].setCharger(true);
+    }
+
+    public boolean isInBounds(int x, int y){
+        // sınırlar içindemi
+        return x >= 0 && x < width && y >= 0 && y < height;
+    }
+
+    public boolean isObstacle(int x, int y){
+        if(!isInBounds(x,y))
+            return true;
+        return grid[x][y].isObstacle(); // false döner
+    }
+
+    public void addFurniture(int x, int y, int width, int height, String name){
+        this.furnitures.add(new Furniture(x,y,width,height,name));
+
+        // engelin koordinatlarıma bakılır , sınırlar içidemi diye
+        for (int i = x; i < x + width; i++) {
+            for (int j = y; j < y + height; j++) {
+                if (isInBounds(i,j))
+                    grid[i][j].setObstacle(true);
+            }
+        }
+    }
+
+    public void addDirt(int x, int y, DirtType type) {
+        // sınır dışıysa veya engel olan hücreye kir eklenemez
+        if (!isInBounds(x, y) || isObstacle(x, y))
+            return; // metotdan hemen çıksın diye return konuldu
+
+        // kir türüne göre doğru alt sınıf oluşturuluyor
+        // polimorfizm — Dirt tipinde tutuyoruz ama Dust/Liquid/Stain olabilir
+        Dirt dirt = switch (type) {
+            case DUST   -> new Dust();
+            case LIQUID -> new Liquid();
+            case STAIN  -> new Stain();
+        };
+
+        // oluşturulan kir hücreye atandı
+        grid[x][y].setDirt(dirt);
+    }
+
+    //  Bütün hücreleri gezerek, engel olmayan hücreleri sayar
+    public int getTotalCleanableCells() {
+        int count = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (!isObstacle(x,y)) count++;
+            }
+        }
+        return count;
+    }
+    // Robotun ziyaret ettiği hücreleri sayar
+    public int getVisitedCells() {
+        int count = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (grid[x][y].isVisited()) count++;
+            }
+        }
+        return count;
+    }
+
+    // Kirli hücreleri sayar
+    public int getDirtyCells() {
+        int count = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                // hücrede kir varsa say
+                if (grid[x][y].hasDirt()) count++;
+            }
+        }
+        // kirli hücre sayısı döndürülüyor
+        return count;
+    }
+    public Cell getCell(int x, int y) {return grid[x][y];}
+
+    public int getWidth() {return this.width;}
+    public int getHeight() {return this.height;}
+
+    public ChargingStation getStation() {return station;}
+    public List<Furniture> getFurnitures() {return furnitures;}
+}

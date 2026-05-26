@@ -1,0 +1,88 @@
+/* Ana arka plan */
+.root {
+    -fx-background-color: #1e1e2e;
+    -fx-font-family: "Segoe UI";
+}
+
+/* Sol panel */
+.left-panel {
+    -fx-background-color: #2a2a3e;
+    -fx-border-color: #3a3a5e;
+    -fx-border-width: 0 1 0 0;
+}
+
+/* Butonlar */
+.button {
+    -fx-background-color: #3a3a5e;
+    -fx-text-fill: white;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #4a4a7e;
+}
+
+/* Başlat butonu — yeşil */
+#startButton {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+}
+
+#startButton:hover {
+    -fx-background-color: #27ae60;
+}
+
+/* Duraklat butonu — turuncu */
+#pauseButton {
+    -fx-background-color: #e67e22;
+    -fx-text-fill: white;
+}
+
+/* Sıfırla butonu — kırmızı */
+#resetButton {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+/* İstasyona Dön — mavi */
+#returnButton {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+/* Label'lar */
+.label {
+    -fx-text-fill: #cccccc;
+}
+
+/* Alt bar */
+.bottom-bar {
+    -fx-background-color: #2a2a3e;
+    -fx-border-color: #3a3a5e;
+    -fx-border-width: 1 0 0 0;
+}
+.bottom-bar .label {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+}
+
+/* Radio butonlar */
+.radio-button {
+    -fx-text-fill: #cccccc;
+}
+
+/* Progress bar */
+.progress-bar .track {
+    -fx-background-color: #3a3a5e;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #2ecc71;
+}
+
+/* Canvas arka planı */
+.canvas-area {
+    -fx-background-color: #f5f5f0;
+}
