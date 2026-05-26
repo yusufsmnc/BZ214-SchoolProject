@@ -6,7 +6,6 @@ import bm.erciyes.robotvacuumsim.model.Room;
 import bm.erciyes.robotvacuumsim.util.DirtType;
 import bm.erciyes.robotvacuumsim.util.StrategyType;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
@@ -27,7 +26,6 @@ public class MainController {
     @FXML private RadioButton dustRadio;
     @FXML private RadioButton liquidRadio;
     @FXML private RadioButton stainRadio;
-    @FXML private Canvas roomCanvas;
     @FXML private Label positionLabel;
     @FXML private Label cleanedLabel;
     @FXML private Label remainingLabel;
@@ -38,12 +36,13 @@ public class MainController {
     @FXML private Label totalAreaLabel;
     @FXML private Label speedLabel;
     @FXML private Pane canvasPane;
+    @FXML private Pane roomPane;
 
 
     // Controller ve Loop
     private SimulationController simulationController;
     private SimulationLoop simulationLoop;
-    private RoomCanvas roomCanvasRenderer;
+    private RoomPane roomPaneRenderer;
 
     private boolean dirtMode = false;
     private boolean furnitureMode = false;
@@ -56,22 +55,15 @@ public class MainController {
         simulationLoop = new SimulationLoop(simulationController);
         simulationController.setMainController(this);
 
-        // canvas renderer oluştur
-        roomCanvasRenderer = new RoomCanvas(roomCanvas, simulationController);
+        roomPaneRenderer = new RoomPane(simulationController);
+        roomPane.getChildren().add(roomPaneRenderer);
 
         // toplam alan — başlangıçta bir kere hesapla
         totalAreaLabel.setText(simulationController.getRoom().getTotalCleanableCells() + " hücre");
 
-        // canvas boyutunu pane'e bağla — sahne hazır olunca
-        roomCanvas.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                roomCanvas.widthProperty().bind(canvasPane.widthProperty());
-                roomCanvas.heightProperty().bind(canvasPane.heightProperty());
-                canvasPane.widthProperty().addListener((o, old, newVal) -> roomCanvasRenderer.draw());
-                canvasPane.heightProperty().addListener((o, old, newVal) -> roomCanvasRenderer.draw());
-                roomCanvasRenderer.draw();
-            }
-        });
+        // RoomPane boyutunu canvasPane'e bağla
+        roomPaneRenderer.prefWidthProperty().bind(canvasPane.widthProperty());
+        roomPaneRenderer.prefHeightProperty().bind(canvasPane.heightProperty());
 
         // radio button grubu — sadece biri seçilebilsin
         ToggleGroup strategyGroup = new ToggleGroup();
@@ -100,20 +92,19 @@ public class MainController {
             else if (newVal == wallRadio) simulationController.setStrategy(StrategyType.WALL_FOLLOW);
         });
 
-        // canvas tıklama olayı
-        roomCanvas.setOnMouseClicked(event -> {
+        roomPane.setOnMouseClicked(event -> {
             Room room = simulationController.getRoom();
-            int cellSize = (int) Math.min(
-                    roomCanvas.getWidth() / (room.getWidth() + 2),
-                    roomCanvas.getHeight() / (room.getHeight() + 2)
-            );
-            int totalWidth = (room.getWidth() + 2) * cellSize;
-            int totalHeight = (room.getHeight() + 2) * cellSize;
-            int startX = (int)(roomCanvas.getWidth() - totalWidth) / 2;
-            int startY = (int)(roomCanvas.getHeight() - totalHeight) / 2;
+            int cs = roomPaneRenderer.getCellSize();
 
-            int cellX = (int) ((event.getX() - startX - cellSize) / cellSize);
-            int cellY = (int) ((event.getY() - startY - cellSize) / cellSize);
+            // roomPaneRenderer'ın roomPane içindeki konumunu hesaba kat
+            double offsetX = roomPaneRenderer.getLayoutX();
+            double offsetY = roomPaneRenderer.getLayoutY();
+
+            int cellX = (int) ((event.getX() - offsetX) / cs);
+            int cellY = (int) ((event.getY() - offsetY) / cs);
+
+            System.out.println("tıklandı: cellX=" + cellX + " cellY=" + cellY + " cs=" + cs);
+            System.out.println("offset: " + offsetX + " " + offsetY);
 
             if (!room.isInBounds(cellX, cellY)) return;
 
@@ -122,11 +113,13 @@ public class MainController {
                 if (liquidRadio.isSelected()) type = DirtType.LIQUID;
                 else if (stainRadio.isSelected()) type = DirtType.STAIN;
                 simulationController.addDirt(cellX, cellY, type);
-                roomCanvasRenderer.draw();
+                roomPaneRenderer.addDirtView(cellX, cellY, type);
             } else if (furnitureMode) {
                 if (!room.isInBounds(cellX + 1, cellY + 1)) return;
+                if (room.isObstacle(cellX, cellY)) return;
+                roomPaneRenderer.addFurnitureView(cellX, cellY, cs);
                 simulationController.addFurniture(cellX, cellY, 2, 2, "Mobilya");
-                roomCanvasRenderer.draw();
+
             }
         });
     }
@@ -150,7 +143,7 @@ public class MainController {
     private void onResetClicked() {
         simulationLoop.stop();
         simulationController.resetSimulation();
-        roomCanvasRenderer.draw();
+        roomPaneRenderer.update();
         updateStatus();
     }
 
@@ -204,6 +197,6 @@ public class MainController {
         dirtLabel.setText(String.valueOf(stats.getCollectedDirt()));
 
 
-        roomCanvasRenderer.draw();
+        roomPaneRenderer.update();
     }
 }

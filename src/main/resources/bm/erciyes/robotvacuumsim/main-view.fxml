@@ -85,7 +85,7 @@
    </left>
    <center>
       <Pane fx:id="canvasPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
-         <Canvas fx:id="roomCanvas"/>
+         <Pane fx:id="roomPane"/>
       </Pane>
    </center>
    <bottom>
