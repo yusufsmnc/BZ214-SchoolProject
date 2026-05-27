@@ -114,12 +114,23 @@ public class MainController {
                 else if (stainRadio.isSelected()) type = DirtType.STAIN;
                 simulationController.addDirt(cellX, cellY, type);
                 roomPaneRenderer.addDirtView(cellX, cellY, type);
-            } else if (furnitureMode) {
+            }  else if (furnitureMode) {
                 if (!room.isInBounds(cellX + 1, cellY + 1)) return;
-                if (room.isObstacle(cellX, cellY)) return;
+
+                // 2x2 alanın tüm hücrelerini kontrol et
+                boolean anyObstacle = false;
+                for (int i = cellX; i < cellX + 2; i++) {
+                    for (int j = cellY; j < cellY + 2; j++) {
+                        if (!room.isInBounds(i, j) || room.isObstacle(i, j)) {
+                            anyObstacle = true;
+                            break;
+                        }
+                    }
+                }
+                if (anyObstacle) return;
+
                 roomPaneRenderer.addFurnitureView(cellX, cellY, cs);
                 simulationController.addFurniture(cellX, cellY, 2, 2, "Mobilya");
-
             }
         });
     }
@@ -143,7 +154,7 @@ public class MainController {
     private void onResetClicked() {
         simulationLoop.stop();
         simulationController.resetSimulation();
-        roomPaneRenderer.update();
+        roomPaneRenderer.rebuildGrid();
         updateStatus();
     }
 

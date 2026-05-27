@@ -263,10 +263,10 @@ public class RoomPane extends Pane {
 
         if (furnitureImage != null) {
             ImageView fv = new ImageView(furnitureImage);
-            fv.setX(x * cs);
-            fv.setY(y * cs);
-            fv.setFitWidth(2 * cs);
-            fv.setFitHeight(2 * cs);
+            fv.setX(x * cs - 4);   // image i büyüttük , altındaki gir tabanın gözükmesini azaltmak için
+            fv.setY(y * cs - 4);
+            fv.setFitWidth(2 * cs + 8);
+            fv.setFitHeight(2 * cs + 8);
             fv.setPreserveRatio(false);
             getChildren().remove(robotView);
             getChildren().add(fv);
