@@ -12,6 +12,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 public class RoomPane extends Pane {
 
     private SimulationController controller;
@@ -28,15 +32,27 @@ public class RoomPane extends Pane {
     public static final int CELL_SIZE = 40;
     private boolean rebuilding = false; // listener kontrolü
 
+    private double lastWidth = 0;
+    private double lastHeight = 0;
+
+
     public RoomPane(SimulationController controller) {
         this.controller = controller;
         loadImages();
 
         widthProperty().addListener((obs, old, newVal) -> {
-            if (newVal.doubleValue() > 0 && !rebuilding) rebuildGrid();
+            if (newVal.doubleValue() > 0 && !rebuilding &&
+                    Math.abs(newVal.doubleValue() - lastWidth) > 1) {
+                lastWidth = newVal.doubleValue();
+                rebuildGrid();
+            }
         });
         heightProperty().addListener((obs, old, newVal) -> {
-            if (newVal.doubleValue() > 0 && !rebuilding) rebuildGrid();
+            if (newVal.doubleValue() > 0 && !rebuilding &&
+                    Math.abs(newVal.doubleValue() - lastHeight) > 1) {
+                lastHeight = newVal.doubleValue();
+                rebuildGrid();
+            }
         });
     }
 
@@ -90,6 +106,9 @@ public class RoomPane extends Pane {
                 getChildren().add(rect);
             }
         }
+
+        // yenisi — metodu çağır
+        updateUnreachable();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -172,11 +191,24 @@ public class RoomPane extends Pane {
         Robot robot = controller.getRobot();
         int cs = getCellSize();
 
+        // unreachable hücreleri al
+        List<int[]> unreachable = room.getUnreachableCells();
+        Set<String> unreachableSet = new HashSet<>();
+        for (int[] uc : unreachable) {
+            unreachableSet.add(uc[0] + "," + uc[1]);
+        }
+
         for (int x = 0; x < room.getWidth(); x++) {
             for (int y = 0; y < room.getHeight(); y++) {
                 Cell cell = room.getCell(x, y);
                 Rectangle rect = cellRects[x][y];
-                if (rect != null) rect.setFill(getCellColor(cell));
+                if (rect != null) {
+                    if (unreachableSet.contains(x + "," + y)) {
+                        rect.setFill(Color.rgb(255, 180, 180)); // kırmızı
+                    } else {
+                        rect.setFill(getCellColor(cell));
+                    }
+                }
                 if (!cell.hasDirt() && dirtViews[x][y] != null) animateDirtClean(x, y);
             }
         }
@@ -276,5 +308,28 @@ public class RoomPane extends Pane {
 
         System.out.println("getChildren().size() sonra: " + getChildren().size());
         rebuilding = false;
+
+    }
+
+    private void updateUnreachable() {
+        if (cellRects == null) return;
+        Room room = controller.getRoom();
+
+        // obstacle olmayanları temizle
+        for (int x = 0; x < room.getWidth(); x++) {
+            for (int y = 0; y < room.getHeight(); y++) {
+                if (cellRects[x][y] != null && !room.isObstacle(x, y)) {
+                    cellRects[x][y].setFill(getCellColor(room.getCell(x, y)));
+                }
+            }
+        }
+
+        // unreachable hücreleri kırmızı yap
+        List<int[]> unreachable = room.getUnreachableCells();
+        for (int[] uc : unreachable) {
+            if (cellRects[uc[0]][uc[1]] != null) {
+                cellRects[uc[0]][uc[1]].setFill(Color.rgb(255, 180, 180));
+            }
+        }
     }
 }

@@ -3,7 +3,9 @@ package bm.erciyes.robotvacuumsim.model;
 import bm.erciyes.robotvacuumsim.util.DirtType;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class Room {
     private int width;
@@ -103,6 +105,44 @@ public class Room {
         // kirli hücre sayısı döndürülüyor
         return count;
     }
+
+    public List<int[]> getUnreachableCells() {
+        boolean[][] reachable = new boolean[width][height];
+        Queue<int[]> queue = new LinkedList<>();
+
+        // şarj istasyonundan BFS başlat
+        int startX = station.getX();
+        int startY = station.getY();
+        queue.add(new int[]{startX, startY});
+        reachable[startX][startY] = true;
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int cx = current[0];
+            int cy = current[1];
+
+            for (int[] dir : new int[][]{{0,1},{0,-1},{1,0},{-1,0}}) {
+                int nx = cx + dir[0];
+                int ny = cy + dir[1];
+                if (isInBounds(nx, ny) && !isObstacle(nx, ny) && !reachable[nx][ny]) {
+                    reachable[nx][ny] = true;
+                    queue.add(new int[]{nx, ny});
+                }
+            }
+        }
+
+        // ulaşılamayan engel olmayan hücreler
+        List<int[]> unreachable = new ArrayList<>();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (!isObstacle(x, y) && !reachable[x][y]) {
+                    unreachable.add(new int[]{x, y});
+                }
+            }
+        }
+        return unreachable;
+    }
+
     public Cell getCell(int x, int y) {return grid[x][y];}
 
     public int getWidth() {return this.width;}
