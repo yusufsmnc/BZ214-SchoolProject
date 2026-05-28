@@ -2,10 +2,7 @@ package bm.erciyes.robotvacuumsim.model;
 
 import bm.erciyes.robotvacuumsim.util.DirtType;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Room {
     private int width;
@@ -75,9 +72,18 @@ public class Room {
     //  Bütün hücreleri gezerek, engel olmayan hücreleri sayar
     public int getTotalCleanableCells() {
         int count = 0;
+        List<int[]> unreachable = getUnreachableCells();
+
+        // unreachable hücreleri set'e ekle — hızlı arama için
+        Set<String> unreachableSet = new HashSet<>();
+        for (int[] uc : unreachable) {
+            unreachableSet.add(uc[0] + "," + uc[1]);
+        }
+
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (!isObstacle(x,y)) count++;
+                if (!isObstacle(x, y) && !unreachableSet.contains(x + "," + y))
+                    count++;
             }
         }
         return count;
