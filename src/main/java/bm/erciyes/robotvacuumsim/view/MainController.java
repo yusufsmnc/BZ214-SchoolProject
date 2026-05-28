@@ -35,6 +35,7 @@ public class MainController {
     @FXML private Label batteryLabel;
     @FXML private Label totalAreaLabel;
     @FXML private Label speedLabel;
+    @FXML private Label statusLabel;
     @FXML private Pane canvasPane;
     @FXML private Pane roomPane;
 
@@ -97,8 +98,8 @@ public class MainController {
             int cs = roomPaneRenderer.getCellSize();
 
             // roomPaneRenderer'ın roomPane içindeki konumunu hesaba kat
-            double offsetX = roomPaneRenderer.getLayoutX();
-            double offsetY = roomPaneRenderer.getLayoutY();
+            int offsetX = roomPaneRenderer.getOffsetX();
+            int offsetY = roomPaneRenderer.getOffsetY();
 
             int cellX = (int) ((event.getX() - offsetX) / cs);
             int cellY = (int) ((event.getY() - offsetY) / cs);
@@ -180,7 +181,7 @@ public class MainController {
         addDirtButton.setText("Kir Ekle Modu");
     }
 
-    // Her tick'te çağrılır — label'ları güncelle ve canvas'ı yeniden çiz
+    // Her tick'te çağrılır
     public void updateStatus() {
         var robot = simulationController.getRobot();
         var stats = simulationController.getStats();
@@ -194,13 +195,37 @@ public class MainController {
             case WEST  -> "Bati";
         };
 
+        // robot durumu
+        String statusText = switch (robot.getRobotStatus()) {
+            case MOVING    -> "▶ Hareket ediyor";
+            case CLEANING  -> "🧹 Temizliyor";
+            case CHARGING  -> "⚡ Sarj oluyor";
+            case RETURNING -> "🏠 Istasyona dönüyor";
+            case IDLE      -> "⏸ Bekliyor";
+        };
+        statusLabel.setText(statusText);
+
         int visited = room.getVisitedCells();
         int total = room.getTotalCleanableCells();
 
+        // batarya rengi
+        int batLevel = robot.getBat().getLevel();
+        batteryBar.setProgress(batLevel / 100.0);
+        batteryLabel.setText(batLevel + "%");
+
+        if (batLevel > 50) {
+            batteryBar.getStyleClass().removeAll("battery-low", "battery-medium");
+            batteryBar.getStyleClass().add("battery-high");
+        } else if (batLevel > 20) {
+            batteryBar.getStyleClass().removeAll("battery-low", "battery-high");
+            batteryBar.getStyleClass().add("battery-medium");
+        } else {
+            batteryBar.getStyleClass().removeAll("battery-medium", "battery-high");
+            batteryBar.getStyleClass().add("battery-low");
+        }
+
         positionLabel.setText("Konum: (" + robot.getX() + "," + robot.getY() + ")");
         directionLabel.setText("Yon: " + dirText);
-        batteryBar.setProgress(robot.getBat().getLevel() / 100.0);
-        batteryLabel.setText("%" + robot.getBat().getLevel());
 
         cleanedLabel.setText(visited + " hücre (" + String.format("%.1f", stats.getCleanedPercentage()) + "%)");
         remainingLabel.setText((total - visited) + " hücre (" + String.format("%.1f", stats.getRemainingPercentage()) + "%)");

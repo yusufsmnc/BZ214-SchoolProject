@@ -79,8 +79,9 @@ public class RoomPane extends Pane {
         int h = (int) Math.max(getHeight(), getPrefHeight());
         if (w <= 0 || h <= 0) return CELL_SIZE;
         Room room = controller.getRoom();
-        int cellW = w / room.getWidth();
-        int cellH = h / room.getHeight();
+        int margin = 40; // koordinatlar için kenar boşluğu
+        int cellW = (w - margin) / room.getWidth();
+        int cellH = (h - margin) / room.getHeight();
         return Math.min(cellW, cellH);
     }
 
@@ -92,13 +93,22 @@ public class RoomPane extends Pane {
         int width = room.getWidth();
         int height = room.getHeight();
 
+        // grid'i ortala
+        int totalW = width * cs;
+        int totalH = height * cs;
+        int paneW = (int) Math.max(getWidth(), getPrefWidth());
+        int paneH = (int) Math.max(getHeight(), getPrefHeight());
+        int offsetX = Math.max(20, (paneW - totalW) / 2);
+        int offsetY = Math.max(20, (paneH - totalH) / 2);
+
         cellRects = new Rectangle[width][height];
         dirtViews = new ImageView[width][height];
 
+        // hücreler
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Cell cell = room.getCell(x, y);
-                Rectangle rect = new Rectangle(x * cs, y * cs, cs, cs);
+                Rectangle rect = new Rectangle(offsetX + x * cs, offsetY + y * cs, cs, cs);
                 rect.setFill(getCellColor(cell));
                 rect.setStroke(Color.rgb(210, 210, 215));
                 rect.setStrokeWidth(0.5);
@@ -107,14 +117,14 @@ public class RoomPane extends Pane {
             }
         }
 
-        // yenisi — metodu çağır
         updateUnreachable();
 
+        // kirler
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 Cell cell = room.getCell(x, y);
                 if (cell.hasDirt() && !cell.isObstacle()) {
-                    ImageView dv = createDirtView(x, y, cell.getDirt().getType(), cs);
+                    ImageView dv = createDirtViewOffset(x, y, cell.getDirt().getType(), cs, offsetX, offsetY);
                     if (dv != null) {
                         dirtViews[x][y] = dv;
                         getChildren().add(dv);
@@ -123,34 +133,62 @@ public class RoomPane extends Pane {
             }
         }
 
+        // mobilyalar
         for (Furniture f : room.getFurnitures()) {
             if (furnitureImage != null) {
                 ImageView fv = new ImageView(furnitureImage);
-                fv.setX(f.getX() * cs);
-                fv.setY(f.getY() * cs);
-                fv.setFitWidth(f.getWidth() * cs);
-                fv.setFitHeight(f.getHeight() * cs);
+                fv.setX(offsetX + f.getX() * cs - 4);
+                fv.setY(offsetY + f.getY() * cs - 4);
+                fv.setFitWidth(f.getWidth() * cs + 8);
+                fv.setFitHeight(f.getHeight() * cs + 8);
                 getChildren().add(fv);
             } else {
-                Rectangle fr = new Rectangle(f.getX() * cs, f.getY() * cs, f.getWidth() * cs, f.getHeight() * cs);
+                Rectangle fr = new Rectangle(offsetX + f.getX() * cs, offsetY + f.getY() * cs, f.getWidth() * cs, f.getHeight() * cs);
                 fr.setFill(Color.SADDLEBROWN);
                 getChildren().add(fr);
             }
         }
 
+        // şarj istasyonu
         if (stationImage != null) {
             ImageView sv = new ImageView(stationImage);
-            sv.setX(room.getStation().getX() * cs);
-            sv.setY(room.getStation().getY() * cs);
+            sv.setX(offsetX + room.getStation().getX() * cs);
+            sv.setY(offsetY + room.getStation().getY() * cs);
             sv.setFitWidth(cs);
             sv.setFitHeight(cs);
             getChildren().add(sv);
         }
 
+        // border
+        Rectangle border = new Rectangle(offsetX, offsetY, totalW, totalH);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.rgb(100, 100, 130));
+        border.setStrokeWidth(3);
+        getChildren().add(border);
+
+        // koordinatlar — üst
+        for (int x = 0; x < width; x++) {
+            javafx.scene.control.Label lbl = new javafx.scene.control.Label(String.valueOf(x));
+            lbl.setStyle("-fx-text-fill: #cc4444; -fx-font-size: 10px;");
+            lbl.setLayoutX(offsetX + x * cs + cs / 4.0);
+            lbl.setLayoutY(offsetY - 16);
+            getChildren().add(lbl);
+        }
+
+        // koordinatlar — sol
+        for (int y = 0; y < height; y++) {
+            javafx.scene.control.Label lbl = new javafx.scene.control.Label(String.valueOf(y));
+            lbl.setStyle("-fx-text-fill: #cc4444; -fx-font-size: 10px;");
+            lbl.setLayoutX(offsetX - 16);
+            lbl.setLayoutY(offsetY + y * cs + cs / 4.0);
+            getChildren().add(lbl);
+        }
+
+        // robot
         robotView = new ImageView(robotImage);
         Robot robot = controller.getRobot();
-        robotView.setX(robot.getX() * cs);
-        robotView.setY(robot.getY() * cs);
+        robotView.setX(offsetX + robot.getX() * cs);
+        robotView.setY(offsetY + robot.getY() * cs);
         robotView.setFitWidth(cs);
         robotView.setFitHeight(cs);
         getChildren().add(robotView);
@@ -162,12 +200,12 @@ public class RoomPane extends Pane {
         return Color.rgb(245, 245, 250);
     }
 
-    private ImageView createDirtView(int x, int y, DirtType type, int cs) {
+    private ImageView createDirtViewOffset(int x, int y, DirtType type, int cs, int offsetX, int offsetY) {
         Image dirtImg = getDirtImage(type);
         if (dirtImg == null) return null;
         ImageView dv = new ImageView(dirtImg);
-        dv.setX(x * cs + 4);
-        dv.setY(y * cs + 4);
+        dv.setX(offsetX + x * cs + 4);
+        dv.setY(offsetY + y * cs + 4);
         dv.setFitWidth(cs - 8);
         dv.setFitHeight(cs - 8);
         return dv;
@@ -181,6 +219,21 @@ public class RoomPane extends Pane {
         };
     }
 
+    // offset hesaplama yardımcı metodu
+    public int getOffsetX() {
+        int paneW = (int) Math.max(getWidth(), getPrefWidth());
+        Room room = controller.getRoom();
+        int totalW = room.getWidth() * getCellSize();
+        return Math.max(20, (paneW - totalW) / 2);
+    }
+
+    public int getOffsetY() {
+        int paneH = (int) Math.max(getHeight(), getPrefHeight());
+        Room room = controller.getRoom();
+        int totalH = room.getHeight() * getCellSize();
+        return Math.max(20, (paneH - totalH) / 2);
+    }
+
     public void update() {
         if (cellRects == null) {
             rebuildGrid();
@@ -190,6 +243,8 @@ public class RoomPane extends Pane {
         Room room = controller.getRoom();
         Robot robot = controller.getRobot();
         int cs = getCellSize();
+        int offsetX = getOffsetX();
+        int offsetY = getOffsetY();
 
         // unreachable hücreleri al
         List<int[]> unreachable = room.getUnreachableCells();
@@ -204,7 +259,7 @@ public class RoomPane extends Pane {
                 Rectangle rect = cellRects[x][y];
                 if (rect != null) {
                     if (unreachableSet.contains(x + "," + y)) {
-                        rect.setFill(Color.rgb(255, 180, 180)); // kırmızı
+                        rect.setFill(Color.rgb(255, 180, 180));
                     } else {
                         rect.setFill(getCellColor(cell));
                     }
@@ -213,21 +268,24 @@ public class RoomPane extends Pane {
             }
         }
 
-        robotView.setX(robot.getX() * cs);
-        robotView.setY(robot.getY() * cs);
+        robotView.setX(offsetX + robot.getX() * cs);
+        robotView.setY(offsetY + robot.getY() * cs);
     }
 
     public void animateRobotMove(int fromX, int fromY, int toX, int toY) {
         int cs = getCellSize();
-        robotView.setX(fromX * cs);
-        robotView.setY(fromY * cs);
+        int offsetX = getOffsetX();
+        int offsetY = getOffsetY();
+
+        robotView.setX(offsetX + fromX * cs);
+        robotView.setY(offsetY + fromY * cs);
 
         TranslateTransition move = new TranslateTransition(Duration.millis(150), robotView);
         move.setToX((toX - fromX) * cs);
         move.setToY((toY - fromY) * cs);
         move.setOnFinished(e -> {
-            robotView.setX(toX * cs);
-            robotView.setY(toY * cs);
+            robotView.setX(offsetX + toX * cs);
+            robotView.setY(offsetY + toY * cs);
             robotView.setTranslateX(0);
             robotView.setTranslateY(0);
         });
@@ -258,8 +316,15 @@ public class RoomPane extends Pane {
 
         Platform.runLater(() -> {
             int cs = getCellSize();
-            ImageView dirtView = createDirtView(x, y, type, cs);
-            if (dirtView == null) return;
+            int offsetX = getOffsetX();
+            int offsetY = getOffsetY();
+            Image dirtImg = getDirtImage(type);
+            if (dirtImg == null) return;
+            ImageView dirtView = new ImageView(dirtImg);
+            dirtView.setX(offsetX + x * cs + 4);
+            dirtView.setY(offsetY + y * cs + 4);
+            dirtView.setFitWidth(cs - 8);
+            dirtView.setFitHeight(cs - 8);
             dirtView.setScaleX(0);
             dirtView.setScaleY(0);
             if (dirtViews != null) dirtViews[x][y] = dirtView;
@@ -272,16 +337,14 @@ public class RoomPane extends Pane {
     }
 
     public void addFurnitureView(int x, int y, int cs) {
-        System.out.println("addFurnitureView çağrıldı: x=" + x + " y=" + y + " cs=" + cs);
-        System.out.println("furnitureImage: " + furnitureImage);
-        System.out.println("getChildren().size() önce: " + getChildren().size());
-
-        // zaten obstacle ise ekleme
         if (cellRects != null && cellRects[x][y] != null &&
                 cellRects[x][y].getFill().equals(Color.rgb(100, 100, 110))) {
             return;
         }
 
+        int actualCs = getCellSize(); // dışarıdan gelen cs yerine
+        int offsetX = getOffsetX();
+        int offsetY = getOffsetY();
         Room room = controller.getRoom();
         rebuilding = true;
 
@@ -295,20 +358,23 @@ public class RoomPane extends Pane {
 
         if (furnitureImage != null) {
             ImageView fv = new ImageView(furnitureImage);
-            fv.setX(x * cs - 4);   // image i büyüttük , altındaki gir tabanın gözükmesini azaltmak için
-            fv.setY(y * cs - 4);
-            fv.setFitWidth(2 * cs + 8);
-            fv.setFitHeight(2 * cs + 8);
+            fv.setX(offsetX + x * actualCs - 4);
+            fv.setY(offsetY + y * actualCs - 4);
+            fv.setFitWidth(2 * actualCs + 8);
+            fv.setFitHeight(2 * actualCs + 8);
             fv.setPreserveRatio(false);
             getChildren().remove(robotView);
             getChildren().add(fv);
             getChildren().add(robotView);
-            System.out.println("ImageView eklendi: " + fv.getX() + " " + fv.getY() + " w=" + fv.getFitWidth());
+        } else {
+            Rectangle fr = new Rectangle(offsetX + x * actualCs, offsetY + y * actualCs, 2 * actualCs, 2 * actualCs);
+            fr.setFill(Color.SADDLEBROWN);
+            getChildren().remove(robotView);
+            getChildren().add(fr);
+            getChildren().add(robotView);
         }
 
-        System.out.println("getChildren().size() sonra: " + getChildren().size());
         rebuilding = false;
-
     }
 
     private void updateUnreachable() {
@@ -332,4 +398,5 @@ public class RoomPane extends Pane {
             }
         }
     }
+
 }

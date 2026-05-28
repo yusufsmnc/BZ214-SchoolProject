@@ -78,11 +78,23 @@
     -fx-background-color: #3a3a5e;
 }
 
-.progress-bar .bar {
+
+.battery-high .bar {
     -fx-background-color: #2ecc71;
 }
+.battery-medium .bar {
+    -fx-background-color: #f39c12;
+}
+.battery-low .bar {
+    -fx-background-color: #e74c3c;
+}
 
-/* Canvas arka planı */
-.canvas-area {
-    -fx-background-color: #f5f5f0;
+.battery-high .bar {
+    -fx-background-color: #2ecc71;
+}
+.battery-medium .bar {
+    -fx-background-color: #f39c12;
+}
+.battery-low .bar {
+    -fx-background-color: #e74c3c;
 }
