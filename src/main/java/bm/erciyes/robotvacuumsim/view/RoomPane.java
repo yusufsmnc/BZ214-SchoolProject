@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ public class RoomPane extends Pane {
     private double lastWidth = 0;
     private double lastHeight = 0;
 
+    private List<javafx.scene.shape.Line> pathLines = new ArrayList<>();
 
     public RoomPane(SimulationController controller) {
         this.controller = controller;
@@ -86,6 +88,7 @@ public class RoomPane extends Pane {
     }
 
     public void rebuildGrid() {
+        pathLines.clear();
         getChildren().clear();
 
         Room room = controller.getRoom();
@@ -262,6 +265,31 @@ public class RoomPane extends Pane {
                 }
                 if (!cell.hasDirt() && dirtViews[x][y] != null) animateDirtClean(x, y);
             }
+        }
+        // robot yolu — çizgi
+        int cs = getCellSize();
+        int offsetX = getOffsetX();
+        int offsetY = getOffsetY();
+        List<int[]> path = controller.getRobot().getPath();
+
+        if (path.size() >= 2) {
+            int[] prev = path.get(path.size() - 2);
+            int[] curr = path.get(path.size() - 1);
+
+            javafx.scene.shape.Line line = new javafx.scene.shape.Line(
+                    offsetX + prev[0] * cs + cs / 2.0,
+                    offsetY + prev[1] * cs + cs / 2.0,
+                    offsetX + curr[0] * cs + cs / 2.0,
+                    offsetY + curr[1] * cs + cs / 2.0
+            );
+            line.setStroke(Color.rgb(100, 149, 237, 0.7));
+            line.setStrokeWidth(2);
+            pathLines.add(line);
+            getChildren().add(line);
+
+            // robotu en üste al
+            getChildren().remove(robotView);
+            getChildren().add(robotView);
         }
     }
 

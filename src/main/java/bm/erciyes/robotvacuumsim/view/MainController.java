@@ -241,7 +241,6 @@ public class MainController {
         } else {
             roomPaneRenderer.updateRobotPosition();
         }
-
         roomPaneRenderer.update();
     }
 }
