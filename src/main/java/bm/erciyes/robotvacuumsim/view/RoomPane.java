@@ -241,10 +241,6 @@ public class RoomPane extends Pane {
         }
 
         Room room = controller.getRoom();
-        Robot robot = controller.getRobot();
-        int cs = getCellSize();
-        int offsetX = getOffsetX();
-        int offsetY = getOffsetY();
 
         // unreachable hücreleri al
         List<int[]> unreachable = room.getUnreachableCells();
@@ -267,20 +263,36 @@ public class RoomPane extends Pane {
                 if (!cell.hasDirt() && dirtViews[x][y] != null) animateDirtClean(x, y);
             }
         }
+    }
 
+    public void updateRobotPosition() {
+        if (robotView == null) return;
+        int cs = getCellSize();
+        int offsetX = getOffsetX();
+        int offsetY = getOffsetY();
+        Robot robot = controller.getRobot();
         robotView.setX(offsetX + robot.getX() * cs);
         robotView.setY(offsetY + robot.getY() * cs);
     }
 
     public void animateRobotMove(int fromX, int fromY, int toX, int toY) {
+        if (robotView == null) return;
         int cs = getCellSize();
         int offsetX = getOffsetX();
         int offsetY = getOffsetY();
 
+        // önce translate'i sıfırla
+        robotView.setTranslateX(0);
+        robotView.setTranslateY(0);
+
+        // başlangıç pozisyonu
         robotView.setX(offsetX + fromX * cs);
         robotView.setY(offsetY + fromY * cs);
 
-        TranslateTransition move = new TranslateTransition(Duration.millis(150), robotView);
+        // hedef pozisyona kayarak git
+        TranslateTransition move = new TranslateTransition(Duration.millis(100), robotView);
+        move.setFromX(0);
+        move.setFromY(0);
         move.setToX((toX - fromX) * cs);
         move.setToY((toY - fromY) * cs);
         move.setOnFinished(e -> {

@@ -20,6 +20,7 @@ import java.util.List;
 public class SimulationController {
     private int cleaningTick = 0; // temizleme sayacı
     private int tickCount = 0;  // hareketleri sayıp, istasyona yetişmek için gereken pil miktarını hesaplamak için kullancaz
+    private boolean robotMoved = false;
     private Room room;
     private Robot robot;
     private SimulationState state;
@@ -67,6 +68,13 @@ public class SimulationController {
         robot.setRobotStatus(RobotStatus.RETURNING);
         this.returnPath = pathFinder.findPath(robot.getX(), robot.getY(), room.getStation().getX(), room.getStation().getY());
     }
+
+    public boolean didRobotMove() {
+        boolean moved = robotMoved;
+        robotMoved = false;
+        return moved;
+    }
+
     public void onTick() {
         // simülasyon çalışmıyorsa veya duraklatıldıysa dur
         if (!state.isRunning() || state.isPaused()) return;
@@ -79,6 +87,7 @@ public class SimulationController {
                 // yoldan bir sonraki adımı al ve hareket et
                 Direction next = returnPath.remove(0);
                 robot.move(next);
+                robotMoved = true;
 
                 // istasyona ulaştı mı?
                 if (robot.getX() == room.getStation().getX() && robot.getY() == room.getStation().getY()) {
@@ -140,6 +149,7 @@ public class SimulationController {
 
         // hareket et
         robot.move(dir);
+        robotMoved = true;
         robot.setRobotStatus(RobotStatus.MOVING);
 
         // hücreyi ziyaret edildi olarak işaretle

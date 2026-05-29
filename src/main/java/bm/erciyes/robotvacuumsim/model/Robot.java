@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Robot {
+    private int prevX;
+    private int prevY;
     private int x;
     private int y;
     private Direction dir;
@@ -26,6 +28,8 @@ public class Robot {
     }
     public void move(Direction dir) {
         // yön güncellendi
+        prevX = x;
+        prevY = y;
         this.dir = dir;
 
         // dx ve dy ile konum güncellendi — switch'e gerek kalmadı
@@ -66,6 +70,9 @@ public class Robot {
 
     public int getX() {return x;}
     public int getY() {return y;}
+
+    public int getPrevX() { return prevX; }
+    public int getPrevY() { return prevY; }
 
     public void setX(int x) {this.x = x;}
     public void setY(int y) {this.y = y;}

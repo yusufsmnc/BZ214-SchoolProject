@@ -232,6 +232,15 @@ public class MainController {
         timeLabel.setText(state.getFormattedTime());
         dirtLabel.setText(String.valueOf(stats.getCollectedDirt()));
 
+        // robot hareket ettiyse animasyon yap
+        if (simulationController.didRobotMove()) {
+            roomPaneRenderer.animateRobotMove(
+                    robot.getPrevX(), robot.getPrevY(),
+                    robot.getX(), robot.getY()
+            );
+        } else {
+            roomPaneRenderer.updateRobotPosition();
+        }
 
         roomPaneRenderer.update();
     }
