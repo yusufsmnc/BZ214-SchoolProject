@@ -103,10 +103,17 @@
                   <Button fx:id="resetButton" onAction="#onResetClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="■ Sifirla" />
                   <Button fx:id="returnButton" onAction="#onReturnClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="🏠 Istasyona Don" />
 
-                  <!-- Alt boşluk doldurucu -->
+                  <Label text="🔋 Manuel Batarya" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff; -fx-font-size: 13px;" maxWidth="1.7976931348623157E308"/>
+                  <Slider fx:id="batterySlider" min="0" max="100" value="100"
+                          majorTickUnit="25" minorTickCount="4"
+                          showTickLabels="true" showTickMarks="true"
+                          snapToTicks="false"
+                          maxWidth="1.7976931348623157E308"/>
+
+                  <!-- Proje Bilgisi -->
                   <Pane VBox.vgrow="ALWAYS"/>
                   <Separator/>
-                  <Label text="Simulasyon - JavaFX Projesi"
+                  <Label text="Robot Supurge Simulasyonu - JavaFX Projesi"
                          style="-fx-text-fill: #555577; -fx-font-size: 11px;"
                          maxWidth="1.7976931348623157E308"
                          alignment="CENTER"/>

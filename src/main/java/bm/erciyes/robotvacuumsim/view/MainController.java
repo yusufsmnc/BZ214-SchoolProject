@@ -19,6 +19,7 @@ public class MainController {
     @FXML private Button addDirtButton;
     @FXML private Button addFurnitureButton;
     @FXML private Slider speedSlider;
+    @FXML private Slider batterySlider;
     @FXML private ProgressBar batteryBar;
     @FXML private RadioButton randomRadio;
     @FXML private RadioButton spiralRadio;
@@ -134,6 +135,11 @@ public class MainController {
                 simulationController.addFurniture(cellX, cellY, 2, 2, "Mobilya");
             }
         });
+
+        batterySlider.setOnMouseReleased(event -> {
+            simulationController.setBattery((int) batterySlider.getValue());
+            updateStatus();
+        });
     }
 
     // Başlat butonu
@@ -223,6 +229,11 @@ public class MainController {
             batteryBar.getStyleClass().removeAll("battery-medium", "battery-high");
             batteryBar.getStyleClass().add("battery-low");
         }
+
+        // manuel batarya ayarlamak için slider
+        // batterySlider.setValue(robot.getBat().getLevel());
+        // her tick de güncellendiğinde istediğimiz değere atama yapamıyoruz
+
 
         positionLabel.setText("Konum: (" + robot.getX() + "," + robot.getY() + ")");
         directionLabel.setText("Yon: " + dirText);
