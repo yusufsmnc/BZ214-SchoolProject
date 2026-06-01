@@ -132,6 +132,9 @@ public class SimulationController {
             if (!cell.hasDirt()) {
                 state.incrementDirt();
                 cleaningTick = 0;
+                // kir temizlendiğinde hücreyi ziyaret edildi olarak işaretle
+                room.getCell(robot.getX(), robot.getY()).setVisited(true);
+
             }
             // UI güncelle — JavaFX thread'inde çalıştır
             updateUI();
@@ -152,7 +155,7 @@ public class SimulationController {
         robotMoved = true;
         robot.setRobotStatus(RobotStatus.MOVING);
 
-        // hücreyi ziyaret edildi olarak işaretle
+        // hücreyi ziyaret edildi yap
         room.getCell(robot.getX(), robot.getY()).setVisited(true);
 
         // şarj istasyonunun üzerindeyse şarj et

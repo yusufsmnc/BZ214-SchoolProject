@@ -96,12 +96,12 @@ public class Room {
         }
         return count;
     }
-    // Robotun ziyaret ettiği hücreleri sayar (istastik için)
-    public int getVisitedCells() {
+    // tam temizlenmiş hücreleri sayar — kiri olmayan ve ziyaret edilmiş
+    public int getFullyCleanedCells() {
         int count = 0;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (grid[x][y].isVisited()) count++;
+                if (grid[x][y].isVisited() && !grid[x][y].hasDirt()) count++;
             }
         }
         return count;

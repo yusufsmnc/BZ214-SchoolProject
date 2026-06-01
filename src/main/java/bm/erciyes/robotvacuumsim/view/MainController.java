@@ -211,7 +211,7 @@ public class MainController {
         };
         statusLabel.setText(statusText);
 
-        int visited = room.getVisitedCells();
+        int visited = room.getFullyCleanedCells();
         int total = room.getTotalCleanableCells();
 
         // batarya rengi

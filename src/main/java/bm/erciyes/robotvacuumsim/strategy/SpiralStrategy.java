@@ -30,7 +30,7 @@ public class SpiralStrategy implements CleaningStrategy {
         int frontY = robot.getY() + horizontal.getDy();
 
         // yatay hareket yapabiliyorsa devam et
-        if (!room.isObstacle(frontX, frontY) && !room.getCell(frontX, frontY).isVisited()) {
+        if (!room.isObstacle(frontX, frontY) && (!room.getCell(frontX, frontY).isVisited() || room.getCell(frontX, frontY).hasDirt())) {
             return horizontal;
         }
 
@@ -38,7 +38,7 @@ public class SpiralStrategy implements CleaningStrategy {
         int downX = robot.getX() + Direction.SOUTH.getDx();
         int downY = robot.getY() + Direction.SOUTH.getDy();
 
-        if (!room.isObstacle(downX, downY) && !room.getCell(downX, downY).isVisited()) {
+        if (!room.isObstacle(downX, downY) && (!room.getCell(downX, downY).isVisited() || room.getCell(downX, downY).hasDirt())) {
             goingRight = !goingRight;
             return Direction.SOUTH;
         }
@@ -57,7 +57,6 @@ public class SpiralStrategy implements CleaningStrategy {
         Queue<int[]> queue = new LinkedList<>();
         boolean[][] seen = new boolean[room.getWidth()][room.getHeight()];
         Direction[][] cameFrom = new Direction[room.getWidth()][room.getHeight()];
-        int[][] parent = new int[room.getWidth() * room.getHeight()][2];
 
         int startX = robot.getX();
         int startY = robot.getY();
@@ -71,7 +70,7 @@ public class SpiralStrategy implements CleaningStrategy {
             int cy = current[1];
 
             // ziyaret edilmemiş hücre bulundu
-            if (!room.getCell(cx, cy).isVisited() && (cx != startX || cy != startY)) {
+            if ((!room.getCell(cx, cy).isVisited() || room.getCell(cx, cy).hasDirt())  && (cx != startX || cy != startY)) {
                 return reconstructPath(cameFrom, startX, startY, cx, cy);
             }
 

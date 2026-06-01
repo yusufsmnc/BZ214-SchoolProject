@@ -54,7 +54,7 @@ public class WallFollowStrategy implements CleaningStrategy {
             int cy = current[1];
 
             // frontier mı? — ziyaret edilmemiş ve komşusu ziyaret edilmiş
-            if (!room.getCell(cx, cy).isVisited() && (cx != startX || cy != startY)) {
+            if ((!room.getCell(cx, cy).isVisited() || room.getCell(cx, cy).hasDirt()) && (cx != startX || cy != startY)) {
                 if (hasFrontierNeighbor(cx, cy, room)) {
                     List<Direction> path = reconstructPath(cameFrom, startX, startY, cx, cy);
                     if (!path.isEmpty()) {
@@ -88,7 +88,7 @@ public class WallFollowStrategy implements CleaningStrategy {
             int ny = y + dir.getDy();
             if (!room.isInBounds(nx, ny)) continue;
             if (room.isObstacle(nx, ny)) continue;
-            if (room.getCell(nx, ny).isVisited()) return true;
+            if (room.getCell(nx, ny).isVisited() && !room.getCell(nx, ny).hasDirt()) return true;
         }
         return false;
     }

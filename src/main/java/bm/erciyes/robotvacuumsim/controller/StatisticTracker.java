@@ -18,7 +18,7 @@ public class StatisticTracker {
     // robotun gezdiği alan yüzdesi
     public double getCleanedPercentage() {
         // ziyaret edilen hücre / toplam temizlenebilir hücre * 100
-        return (double) room.getVisitedCells() / room.getTotalCleanableCells() * 100;
+        return (double) room.getFullyCleanedCells() / room.getTotalCleanableCells() * 100;
     }
 
     // gezilmemiş alan yüzdesi

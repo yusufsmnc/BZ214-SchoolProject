@@ -198,9 +198,10 @@ public class RoomPane extends Pane {
     }
 
     private Color getCellColor(Cell cell) {
-        if (cell.isObstacle()) return Color.rgb(100, 100, 110);
-        if (cell.isVisited()) return Color.rgb(200, 230, 210);
-        return Color.rgb(245, 245, 250);
+        if (cell.isObstacle()) return Color.rgb(100, 100, 110); // engel
+        if (cell.hasDirt() && cell.isVisited()) return Color.rgb(255, 235, 150); // yarı temiz — sarı
+        if (cell.isVisited()) return Color.rgb(200, 230, 210); // temizlendi - yeşil
+        return Color.rgb(245, 245, 250); // temiz zemin
     }
 
     private ImageView createDirtViewOffset(int x, int y, DirtType type, int cs, int offsetX, int offsetY) {

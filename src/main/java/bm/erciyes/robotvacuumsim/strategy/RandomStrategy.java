@@ -24,8 +24,8 @@ public class RandomStrategy implements CleaningStrategy {
             if (room.isObstacle(newX, newY)) continue;
             if (room.getCell(newX, newY).isCharger() && robot.getBat().getLevel() > 30) continue;
 
-            if (!room.getCell(newX, newY).isVisited()) {
-                unvisited.add(dir);
+            if (!room.getCell(newX, newY).isVisited() || room.getCell(newX, newY).hasDirt()) {
+                unvisited.add(dir); // kirli hücreler de unvisited sayılsın
             } else {
                 visited.add(dir);
             }
@@ -66,7 +66,7 @@ public class RandomStrategy implements CleaningStrategy {
             int cy = current[1];
 
             // ziyaret edilmemiş hücre bulundu
-            if (!room.getCell(cx, cy).isVisited() && (cx != startX || cy != startY)) {
+            if ((!room.getCell(cx, cy).isVisited() || room.getCell(cx, cy).hasDirt()) && (cx != startX || cy != startY)) {
                 return firstDir[cx][cy];
             }
 
