@@ -220,14 +220,11 @@ public class MainController {
         batteryLabel.setText(batLevel + "%");
 
         if (batLevel > 50) {
-            batteryBar.getStyleClass().removeAll("battery-low", "battery-medium");
-            batteryBar.getStyleClass().add("battery-high");
+            batteryBar.setStyle("-fx-accent: #2ecc71;");
         } else if (batLevel > 20) {
-            batteryBar.getStyleClass().removeAll("battery-low", "battery-high");
-            batteryBar.getStyleClass().add("battery-medium");
+            batteryBar.setStyle("-fx-accent: #f39c12;");
         } else {
-            batteryBar.getStyleClass().removeAll("battery-medium", "battery-high");
-            batteryBar.getStyleClass().add("battery-low");
+            batteryBar.setStyle("-fx-accent: #e74c3c;");
         }
 
         // manuel batarya ayarlamak için slider

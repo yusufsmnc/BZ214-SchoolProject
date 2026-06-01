@@ -12,15 +12,18 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
-
 <?import javafx.scene.control.ScrollPane?>
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bm.erciyes.robotvacuumsim.view.MainController">
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0"
+            style="-fx-background-color: #1e1e2e; -fx-font-family: 'Segoe UI';"
+            xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bm.erciyes.robotvacuumsim.view.MainController">
    <left>
       <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                   BorderPane.alignment="CENTER"
                   style="-fx-background-color: #1e1e2e; -fx-background: #1e1e2e; -fx-border-color: transparent;">
          <content>
-            <VBox fx:id="leftPanel" styleClass="left-panel" prefWidth="230.0" spacing="12.0" alignment="TOP_CENTER">
+            <VBox fx:id="leftPanel" prefWidth="230.0" spacing="12.0" alignment="TOP_CENTER"
+                  style="-fx-background-color: #2a2a3e; -fx-border-color: #3a3a5e; -fx-border-width: 0 1 0 0;">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
@@ -28,14 +31,16 @@
 
                   <!-- Araçlar -->
                   <Label text="🔧 Araclar" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff; -fx-font-size: 13px;" maxWidth="1.7976931348623157E308"/>
-                  <Button fx:id="addDirtButton" onAction="#onAddDirtClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="🧹 Kir Ekle" />
+                  <Button fx:id="addDirtButton" onAction="#onAddDirtClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="🧹 Kir Ekle"
+                          style="-fx-background-color: #3a3a5e; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"/>
                   <Label text="Kir Turu" maxWidth="1.7976931348623157E308" style="-fx-text-fill: #cccccc;"/>
                   <HBox spacing="8" alignment="CENTER_LEFT">
-                     <RadioButton fx:id="dustRadio" mnemonicParsing="false" text="💨 Toz" />
-                     <RadioButton fx:id="liquidRadio" mnemonicParsing="false" text="💧 Sivi" />
-                     <RadioButton fx:id="stainRadio" mnemonicParsing="false" text="🟤 Leke" />
+                     <RadioButton fx:id="dustRadio" mnemonicParsing="false" text="💨 Toz" style="-fx-text-fill: #cccccc;"/>
+                     <RadioButton fx:id="liquidRadio" mnemonicParsing="false" text="💧 Sivi" style="-fx-text-fill: #cccccc;"/>
+                     <RadioButton fx:id="stainRadio" mnemonicParsing="false" text="🟤 Leke" style="-fx-text-fill: #cccccc;"/>
                   </HBox>
-                  <Button fx:id="addFurnitureButton" onAction="#onAddFurnitureClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="🪑 Mobilya Ekle" />
+                  <Button fx:id="addFurnitureButton" onAction="#onAddFurnitureClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="🪑 Mobilya Ekle"
+                          style="-fx-background-color: #3a3a5e; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"/>
 
                   <Separator/>
 
@@ -50,9 +55,9 @@
 
                   <!-- Algoritma -->
                   <Label text="⚙ Temizlik Algoritmasi" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff; -fx-font-size: 13px;" maxWidth="1.7976931348623157E308"/>
-                  <RadioButton fx:id="randomRadio" mnemonicParsing="false" text="🎲 Rastgele" maxWidth="1.7976931348623157E308"/>
-                  <RadioButton fx:id="spiralRadio" mnemonicParsing="false" text="🌀 Spiral" maxWidth="1.7976931348623157E308"/>
-                  <RadioButton fx:id="wallRadio" mnemonicParsing="false" text="🧱 Duvar Takip" maxWidth="1.7976931348623157E308"/>
+                  <RadioButton fx:id="randomRadio" mnemonicParsing="false" text="🎲 Rastgele" maxWidth="1.7976931348623157E308" style="-fx-text-fill: #cccccc;"/>
+                  <RadioButton fx:id="spiralRadio" mnemonicParsing="false" text="🌀 Spiral" maxWidth="1.7976931348623157E308" style="-fx-text-fill: #cccccc;"/>
+                  <RadioButton fx:id="wallRadio" mnemonicParsing="false" text="🧱 Duvar Takip" maxWidth="1.7976931348623157E308" style="-fx-text-fill: #cccccc;"/>
 
                   <Separator/>
 
@@ -97,12 +102,17 @@
                   <!-- Kontroller -->
                   <Label text="🎮 Kontroller" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff; -fx-font-size: 13px;" maxWidth="1.7976931348623157E308"/>
                   <HBox spacing="5" maxWidth="1.7976931348623157E308">
-                     <Button fx:id="startButton" onAction="#onStartClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="▶ Baslat" HBox.hgrow="ALWAYS"/>
-                     <Button fx:id="pauseButton" onAction="#onPauseClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="⏸ Duraklat" HBox.hgrow="ALWAYS"/>
+                     <Button fx:id="startButton" onAction="#onStartClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="▶ Baslat" HBox.hgrow="ALWAYS"
+                             style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"/>
+                     <Button fx:id="pauseButton" onAction="#onPauseClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="⏸ Duraklat" HBox.hgrow="ALWAYS"
+                             style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"/>
                   </HBox>
-                  <Button fx:id="resetButton" onAction="#onResetClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="■ Sifirla" />
-                  <Button fx:id="returnButton" onAction="#onReturnClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="🏠 Istasyona Don" />
+                  <Button fx:id="resetButton" onAction="#onResetClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="■ Sifirla"
+                          style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"/>
+                  <Button fx:id="returnButton" onAction="#onReturnClicked" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="🏠 Istasyona Don"
+                          style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-cursor: hand;"/>
 
+                  <!-- Manuel Batarya -->
                   <Label text="🔋 Manuel Batarya" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff; -fx-font-size: 13px;" maxWidth="1.7976931348623157E308"/>
                   <Slider fx:id="batterySlider" min="0" max="100" value="100"
                           majorTickUnit="25" minorTickCount="4"
@@ -124,35 +134,37 @@
       </ScrollPane>
    </left>
    <center>
-      <Pane fx:id="canvasPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+      <Pane fx:id="canvasPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER"
+            style="-fx-background-color: #1e1e2e;">
          <Pane fx:id="roomPane"/>
       </Pane>
    </center>
    <bottom>
-      <HBox styleClass="bottom-bar" alignment="CENTER" prefHeight="60.0" spacing="30.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="60.0" spacing="30.0" BorderPane.alignment="CENTER"
+            style="-fx-background-color: #2a2a3e; -fx-border-color: #3a3a5e; -fx-border-width: 1 0 0 0;">
          <padding>
             <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
          </padding>
          <children>
             <VBox alignment="CENTER" spacing="3">
-               <Label text="● Toplam Alan" style="-fx-text-fill: #3498db; -fx-font-weight: bold;"/>
-               <Label fx:id="totalAreaLabel" text="280 hucre"/>
+               <Label text="● Toplam Alan" style="-fx-text-fill: #3498db; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+               <Label fx:id="totalAreaLabel" text="280 hucre" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
             </VBox>
             <VBox alignment="CENTER" spacing="3">
-               <Label text="● Temizlenen Alan" style="-fx-text-fill: #2ecc71; -fx-font-weight: bold;"/>
-               <Label fx:id="cleanedLabel" text="0 hucre (0%)"/>
+               <Label text="● Temizlenen Alan" style="-fx-text-fill: #2ecc71; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+               <Label fx:id="cleanedLabel" text="0 hucre (0%)" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
             </VBox>
             <VBox alignment="CENTER" spacing="3">
-               <Label text="● Kalan Alan" style="-fx-text-fill: #e74c3c; -fx-font-weight: bold;"/>
-               <Label fx:id="remainingLabel" text="280 hucre (100%)"/>
+               <Label text="● Kalan Alan" style="-fx-text-fill: #e74c3c; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+               <Label fx:id="remainingLabel" text="280 hucre (100%)" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
             </VBox>
             <VBox alignment="CENTER" spacing="3">
-               <Label text="🕐 Gecen Sure" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff;"/>
-               <Label fx:id="timeLabel" text="00:00"/>
+               <Label text="🕐 Gecen Sure" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff; -fx-font-size: 13px;"/>
+               <Label fx:id="timeLabel" text="00:00" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
             </VBox>
             <VBox alignment="CENTER" spacing="3">
-               <Label text="🧹 Toplanan Toz" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff;"/>
-               <Label fx:id="dirtLabel" text="0"/>
+               <Label text="🧹 Toplanan Toz" style="-fx-font-weight: bold; -fx-text-fill: #aaaaff; -fx-font-size: 13px;"/>
+               <Label fx:id="dirtLabel" text="0" style="-fx-text-fill: white; -fx-font-size: 13px;"/>
             </VBox>
          </children>
       </HBox>

@@ -15,9 +15,6 @@ public class Launcher extends Application {
                 Launcher.class.getResource("main-view.fxml")
         );
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(
-                Launcher.class.getResource("styles.css").toExternalForm()
-        );
         stage.setTitle("Robot Süpürge Simülasyonu");
         stage.setScene(scene);
         stage.setMaximized(true);
