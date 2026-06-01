@@ -30,20 +30,28 @@ public class Room {
     }
 
     public boolean isInBounds(int x, int y){
+        /*
+         koordinat sınır kontrolü. Her hareket ve ekleme işleminde kullanılır. Sınır dışı erişimi önler
+        */
+
         // sınırlar içindemi
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
     public boolean isObstacle(int x, int y){
+        /*
+        Önce isInBounds kontrol eder, sonra grid[x][y].isObstacle() döndürür. Sınır dışı koordinat otomatik obstacle sayılır
+        */
+
         if(!isInBounds(x,y))
             return true;
         return grid[x][y].isObstacle(); // false döner
     }
 
-    public void addFurniture(int x, int y, int width, int height, String name){
-        this.furnitures.add(new Furniture(x,y,width,height,name));
+    public void addFurniture(int x, int y, int width, int height){
+        this.furnitures.add(new Furniture(x,y,width,height));
 
-        // engelin koordinatlarıma bakılır , sınırlar içidemi diye
+        // engelin koordinatlarına bakılır , sınırlar içidemi diye
         for (int i = x; i < x + width; i++) {
             for (int j = y; j < y + height; j++) {
                 if (isInBounds(i,j))
@@ -88,7 +96,7 @@ public class Room {
         }
         return count;
     }
-    // Robotun ziyaret ettiği hücreleri sayar
+    // Robotun ziyaret ettiği hücreleri sayar (istastik için)
     public int getVisitedCells() {
         int count = 0;
         for (int x = 0; x < width; x++) {
@@ -99,7 +107,7 @@ public class Room {
         return count;
     }
 
-    // Kirli hücreleri sayar
+    // Kirli hücreleri sayar (istastik için)
     public int getDirtyCells() {
         int count = 0;
         for (int x = 0; x < width; x++) {
@@ -113,6 +121,14 @@ public class Room {
     }
 
     public List<int[]> getUnreachableCells() {
+        /*
+        BFS algoritması
+        Şarj istasyonundan başlar
+        4 yönde genişler — obstacle olmayanları işaretler
+        Sonunda işaretlenmemiş obstacle olmayan hücreler → unreachable
+        getTotalCleanableCells() ve RoomPane.update() içinde kullanılır
+         */
+
         boolean[][] reachable = new boolean[width][height];
         Queue<int[]> queue = new LinkedList<>();
 

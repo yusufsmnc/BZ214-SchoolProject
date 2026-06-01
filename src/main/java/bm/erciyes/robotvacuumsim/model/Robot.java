@@ -7,15 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Robot {
+
+    // prevX, prevY robotun bir önceki konumu, animateRobotMove() için gerekli nereden nereye gittiğini bilmek için
     private int prevX;
     private int prevY;
+
     private int x;
     private int y;
     private Direction dir;
     private Battery bat;
+
+    //  robotun durumu. MOVING, CLEANING, CHARGING, RETURNING, IDLE. UI'da gösterilir ve SimulationController'da karar vermede kullanılır
     private RobotStatus robotStatus;
-    private List<int[]> path;  // esneklik olması için list yapıldı
+
+    // esneklik olması için list yapıldı
     // ilerde linkedlist yapmam gerekirse, constructorda arraylist yerine linkedlist yazarım
+    private List<int[]> path;
+
 
     public Robot(int x, int y){
         this.x = x;
@@ -27,7 +35,9 @@ public class Robot {
         this.path.add(new int[]{x,y});  // ilk konum listeye eklendi
     }
     public void move(Direction dir) {
-        // yön güncellendi
+        /*
+        4 şey yapar: prevX/prevY günceller, yönü set eder, koordinatları günceller, bataryayı azaltır, path'e ekler
+        */
         prevX = x;
         prevY = y;
         this.dir = dir;
@@ -43,6 +53,10 @@ public class Robot {
         path.add(new int[]{x, y});
     }
     public void clean(Cell cell){
+        /*
+         kiri bir tick temizler, batarya harcar, kir bittiyse hücreden kaldırır
+        */
+
         // hücrede kir var mı kontrol et
         if(cell.hasDirt()){
 
@@ -59,23 +73,12 @@ public class Robot {
                 cell.removeDirt();
         }
     }
-    // Robot sıfırlandığında eski yolu temizliyoruz.
-    public void resetPath() {
-        // geçilen tüm hücreler listesi temizlendi
-        path.clear();
-
-        // robotun şu anki konumu yeni başlangıç noktası olarak eklendi
-        path.add(new int[]{x, y});
-    }
 
     public int getX() {return x;}
     public int getY() {return y;}
 
     public int getPrevX() { return prevX; }
     public int getPrevY() { return prevY; }
-
-    public void setX(int x) {this.x = x;}
-    public void setY(int y) {this.y = y;}
 
     public Direction getDir() {return dir;}
     public void setDir(Direction dir) {this.dir = dir;}

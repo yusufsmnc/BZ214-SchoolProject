@@ -132,7 +132,7 @@ public class MainController {
                 if (anyObstacle) return;
 
                 roomPaneRenderer.addFurnitureView(cellX, cellY, cs);
-                simulationController.addFurniture(cellX, cellY, 2, 2, "Mobilya");
+                simulationController.addFurniture(cellX, cellY, 2, 2);
             }
         });
 

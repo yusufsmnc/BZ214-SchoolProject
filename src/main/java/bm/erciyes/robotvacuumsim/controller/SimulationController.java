@@ -176,8 +176,8 @@ public class SimulationController {
     }
 
     // mobilya ekle
-    public void addFurniture(int x, int y, int width, int height, String name) {
-        room.addFurniture(x, y, width, height, name);
+    public void addFurniture(int x, int y, int width, int height) {
+        room.addFurniture(x, y, width, height);
     }
 
     // strateji değiştir

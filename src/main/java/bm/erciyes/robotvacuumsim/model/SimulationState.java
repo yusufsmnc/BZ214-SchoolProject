@@ -11,6 +11,11 @@ public class SimulationState {
     private long startTime;
     private long elapsedTime;
 
+    /*
+    running=true, paused=false → çalışıyor
+    running=false, paused=true → duraklatıldı
+    running=false, paused=false → hiç başlamadı veya reset
+     */
     private boolean running;
     private boolean paused;
 
@@ -21,6 +26,7 @@ public class SimulationState {
         this.elapsedTime = 0;
     }
 
+    // start() hem ilk başlatma hem resume görevi görüyor.
     public void start(){
         this.running = true;
         this.paused = false; // önceden duraklatılmış olabilir, sıfırla
@@ -34,13 +40,6 @@ public class SimulationState {
         this.elapsedTime += System.currentTimeMillis() - this.startTime;
     }
 
-    public void resume(){
-        this.running = true;
-        this.paused = false;
-        // pause edilmişken (yani tekrar çalıştırılana kadar)
-        // geçen süreyi elapsed time'da tutmamak için startTime burda güncellenyior
-        this.startTime = System.currentTimeMillis();
-    }
     public void reset(){
         this.running = false;
         this.paused = false;

@@ -6,13 +6,13 @@ public class Cell {
     private int x;
     private int y;
 
-    // Duvar veya mobilya varsa true — robot buradan geçemez
+    // Duvar veya mobilya varsa true — robot buradan geçemez (CollisionHandler kullanır)
     private boolean isObstacle;
 
     // Robot buradan geçtiyse true — yol çizimi ve istatistik için
     private boolean isVisited;
 
-    // Hücredeki kir — temizse null
+    // Hücredeki kir — temizse null - Polimorfizm kullanılır
     private Dirt dirt;
 
     // Şarj istasyonu mu?
@@ -55,6 +55,7 @@ public class Cell {
     public Dirt getDirt() { return dirt; }
     public void setDirt(Dirt dirt) { this.dirt = dirt; }
 
+    // sarj istasyonundan tekrar tekrar geçmesini önler
     public boolean isCharger() { return isCharger; }
     public void setCharger(boolean charger) { this.isCharger = charger; }
 }

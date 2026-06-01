@@ -32,6 +32,4 @@ public abstract class Dirt {
 
     public DirtType getType() { return type; }
     public int getBatteryCost() { return batteryCost; }
-    public int getRemainingTime() { return remainingTime; }
-    public int getCleaningTime() { return cleaningTime; }
 }
