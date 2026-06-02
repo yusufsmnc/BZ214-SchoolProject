@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -185,6 +186,24 @@ public class RoomPane extends Pane {
             lbl.setLayoutX(offsetX - 16);
             lbl.setLayoutY(offsetY + y * cs + cs / 4.0);
             getChildren().add(lbl);
+        }
+
+        // robot yolu — path çizgileri
+        List<int[]> path = controller.getRobot().getPath();
+        for (int i = 1; i < path.size(); i++) {
+            int[] prev = path.get(i - 1);
+            int[] curr = path.get(i);
+
+            Line line = new Line(
+                    offsetX + prev[0] * cs + cs / 2.0,
+                    offsetY + prev[1] * cs + cs / 2.0,
+                    offsetX + curr[0] * cs + cs / 2.0,
+                    offsetY + curr[1] * cs + cs / 2.0
+            );
+            line.setStroke(Color.rgb(100, 149, 237, 0.7));
+            line.setStrokeWidth(2);
+            pathLines.add(line);
+            getChildren().add(line);
         }
 
         // robot

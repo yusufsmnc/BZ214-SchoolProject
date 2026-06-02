@@ -92,6 +92,11 @@
                         <Label text="Ulasilamaz alan" style="-fx-text-fill: #cccccc;"/>
                      </HBox>
                      <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Rectangle width="16" height="16" arcWidth="3" arcHeight="3"
+                                   style="-fx-fill: #ffeb96; -fx-stroke: #aaaaaa; -fx-stroke-width: 0.5;"/>
+                        <Label text="Yarim temizlenmis alan" style="-fx-text-fill: #cccccc;"/>
+                     </HBox>
+                     <HBox spacing="8" alignment="CENTER_LEFT">
                         <Rectangle width="16" height="16" arcWidth="3" arcHeight="3" style="-fx-fill: #646470; -fx-stroke: #aaaaaa; -fx-stroke-width: 0.5;"/>
                         <Label text="Engel (mobilya)" style="-fx-text-fill: #cccccc;"/>
                      </HBox>
@@ -123,7 +128,7 @@
                   <!-- Proje Bilgisi -->
                   <Pane VBox.vgrow="ALWAYS"/>
                   <Separator/>
-                  <Label text="Robot Supurge Simulasyonu - JavaFX Projesi"
+                  <Label text="Robot Supurge Simulasyonu - JavaFX"
                          style="-fx-text-fill: #555577; -fx-font-size: 11px;"
                          maxWidth="1.7976931348623157E308"
                          alignment="CENTER"/>

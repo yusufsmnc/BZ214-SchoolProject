@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
+
 public class MainController {
 
     // FXML elemanları — Scene Builder'daki fx:id'ler ile eşleşmeli
@@ -105,8 +106,6 @@ public class MainController {
             int cellX = (int) ((event.getX() - offsetX) / cs);
             int cellY = (int) ((event.getY() - offsetY) / cs);
 
-            System.out.println("tıklandı: cellX=" + cellX + " cellY=" + cellY + " cs=" + cs);
-            System.out.println("offset: " + offsetX + " " + offsetY);
 
             if (!room.isInBounds(cellX, cellY)) return;
 
@@ -250,5 +249,23 @@ public class MainController {
             roomPaneRenderer.updateRobotPosition();
         }
         roomPaneRenderer.update();
+
+        // simulasyon tamamlandı mı?
+        if (simulationController.isSimulationComplete()) {
+            simulationController.resetComplete();
+            showSimulationComplete();
+        }
+    }
+
+    public void showSimulationComplete() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Simulasyon Tamamlandi");
+        alert.setHeaderText("Tebrikler!");
+        alert.setContentText(
+                "Tum oda temizlendi!\n" +
+                        "Gecen Sure: " + simulationController.getState().getFormattedTime() + "\n" +
+                        "Toplanan Kir: " + simulationController.getStats().getCollectedDirt()
+        );
+        alert.showAndWait();
     }
 }

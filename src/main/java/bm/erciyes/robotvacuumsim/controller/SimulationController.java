@@ -21,6 +21,7 @@ public class SimulationController {
     private int cleaningTick = 0; // temizleme sayacı
     private int tickCount = 0;  // hareketleri sayıp, istasyona yetişmek için gereken pil miktarını hesaplamak için kullancaz
     private boolean robotMoved = false;
+    private boolean simulationComplete = false;
     private Room room;
     private Robot robot;
     private SimulationState state;
@@ -158,6 +159,15 @@ public class SimulationController {
         // hücreyi ziyaret edildi yap
         room.getCell(robot.getX(), robot.getY()).setVisited(true);
 
+        // tüm oda temizlendi mi?
+        if (room.getFullyCleanedCells() >= room.getTotalCleanableCells()) {
+            state.pause();
+            robot.setRobotStatus(RobotStatus.IDLE);
+            simulationComplete = true;
+            updateUI();
+            return;
+        }
+
         // şarj istasyonunun üzerindeyse şarj et
         if (robot.getX() == room.getStation().getX() &&
                 robot.getY() == room.getStation().getY()) {
@@ -202,4 +212,6 @@ public class SimulationController {
     public Robot getRobot() { return robot; }
     public SimulationState getState() { return state; }
     public StatisticTracker getStats() { return stats; }
+    public boolean isSimulationComplete() { return simulationComplete; }
+    public void resetComplete() { simulationComplete = false; }
 }
